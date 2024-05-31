@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-node
+  template:
+    metadata:
+      labels:
+        app: hello-world-node
+    spec:
+      containers:
+      - name: hello-world
+        image: karthikdevops10/2bcloud-hello-world:latest
+        ports:
+        - containerPort: 3000
