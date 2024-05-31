@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/karthikdevops10/nodejs-hello-world.git'
+                git branch: 'main', url: 'https://github.com/karthikdevops10/nodejs-hello-world.git'
             }
         }
         
@@ -47,7 +47,7 @@ pipeline {
                 script {
                     sh '''
                     cd k8s
-                    kubectl apply -f deployment.yaml
+		    kubectl get all -n helloworld
                     '''
                 }
             }
