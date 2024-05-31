@@ -20,6 +20,7 @@ pipeline {
             }
         }
 
+
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
@@ -35,23 +36,26 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    cd k8s
-		    kubectl scale deployment hello-world-node --replicas=0
+                    kubectl scale deployment hello-world-node --replicas=0
+		            kubectl apply -f k8s
+		            kubectl get all
+		            sleep 15
                     '''
                 }
             }
         }
-
-        stage('Deploy to Kubernetes') {
+        
+        stage('Access Web API Using HTTP') {
             steps {
                 script {
-                    sh '''
-                    cd k8s
-		    kubectl get all -n helloworld
-                    '''
+                    def service = 'hello-world-node' // Replace with your service name
+                    def url = sh(script: "minikube service ${service} --url", returnStdout: true).trim()
+                    echo "Service URL: ${url}"
+                    sh "curl ${url}"
                 }
             }
-        }
+        }        
+        
     }
 
     post {
@@ -60,4 +64,3 @@ pipeline {
         }
     }
 }
-
